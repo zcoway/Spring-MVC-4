@@ -15,5 +15,5 @@
 		<appender-ref ref="STDOUT" />
 	</root>
 
-	<logger name="com.ggw.app.spring4" level="ALL" />
+	<logger name="com.ggw.app" level="ALL" />
 </configuration>
