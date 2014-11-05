@@ -161,7 +161,7 @@ public class WXBizMsgCrypt {
 		String signature = SHA1.getSHA1(token, signModle.getTimestamp(),
 				signModle.getNonce());
 		
-		return (signature.equals(signModle.getMsg_signature())) ? true : false;
+		return (signature.equals(signModle.getSignature())) ? true : false;
 	}
 
 	/**
@@ -327,5 +327,13 @@ public class WXBizMsgCrypt {
 		String result = decrypt(echoStr);
 		return result;
 	}
-
+	public static void main(String[] args) {
+		////signature=3084ad896ce61bff425eb03885ae39e854cca0ec&timestamp=1245689&nonce=BBB&echostr=Hello
+		CheckModle checkModle = new CheckModle();
+		checkModle.setSignature("3084ad896ce61bff425eb03885ae39e854cca0ec");
+		checkModle.setTimestamp("1245689");
+		checkModle.setNonce("BBB");
+		WXBizMsgCrypt wx = new WXBizMsgCrypt("wx2014", "4xyk9sC3j5E5FxYEjcJ9JcYdytLUYpKPNATD2fUIqKm", "sd");
+		System.out.println(wx.checkSignature(checkModle));
+	}
 }

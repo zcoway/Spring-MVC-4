@@ -2,7 +2,7 @@ package com.ggw.app.domain.chart;
 
 public class CheckModle {
 	
-	private String msg_signature;
+	private String signature;
 	private String timestamp;
 	private String nonce;
 	private String echostr;
@@ -19,17 +19,22 @@ public class CheckModle {
 	public void setEchostr(String echostr) {
 		this.echostr = echostr;
 	}
-	public String getMsg_signature() {
-		return msg_signature;
+	public String getSignature() {
+		return signature;
 	}
-	public void setMsg_signature(String msg_signature) {
-		this.msg_signature = msg_signature;
+	public void setSignature(String msg_signature) {
+		this.signature = msg_signature;
 	}
 	public String getTimestamp() {
 		return timestamp;
 	}
 	public void setTimestamp(String timestamp) {
 		this.timestamp = timestamp;
+	}
+	@Override
+	public String toString() {
+		return "CheckModle [msg_signature=" + signature + ", timestamp="
+				+ timestamp + ", nonce=" + nonce + ", echostr=" + echostr + "]";
 	}
 
 }

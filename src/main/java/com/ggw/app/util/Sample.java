@@ -10,6 +10,7 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 
+import com.ggw.app.util.chat.SHA1;
 import com.ggw.app.util.chat.WXBizMsgCrypt;
 
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -17,12 +18,17 @@ import javax.xml.parsers.DocumentBuilderFactory;
 public class Sample {
 
 	public static void main(String[] args) throws Exception {
-		String sToken = "QDG6eK";
+		String sToken = "wx2014";
 		String sCorpID = "wx5823bf96d3bd56c7";
-		String sEncodingAESKey = "jWmYm7qr5nMoAUwZRjGtBxmz3KA1tkAj3ykkR6q2B2C";
+		String sEncodingAESKey = "4xyk9sC3j5E5FxYEjcJ9JcYdytLUYpKPNATD2fUIqKm";
 
 		WXBizMsgCrypt wxcpt = new WXBizMsgCrypt(sToken, sEncodingAESKey, sCorpID);
+		
+		
+		
+		
 		/*
+		
 		------------使用示例一：验证回调URL---------------
 		*企业开启回调模式时，企业号会向验证url发送一个get请求 
 		假设点击验证时，企业收到类似请求：
@@ -35,7 +41,7 @@ public class Sample {
 		3. 解密出echostr原文，将原文当作Get请求的response，返回给公众平台
 		第2，3步可以用公众平台提供的库函数VerifyURL来实现。
 
-		*/
+		
 		// 解析出url上的参数值如下：
 		// String sVerifyMsgSig = HttpUtils.ParseUrl("msg_signature");
 		String sVerifyMsgSig = "5c45ff5e21c57e6ad56bac8758b79b1d9ac89fd3";
@@ -46,6 +52,8 @@ public class Sample {
 		// String sVerifyEchoStr = HttpUtils.ParseUrl("echostr");
 		String sVerifyEchoStr = "P9nAzCzyDtyTWESHep1vC5X9xho/qYX3Zpb4yKa9SKld1DsH3Iyt3tP3zNdtp+4RPcs8TgAE7OaBO+FZXvnaqQ==";
 		String sEchoStr; //需要返回的明文
+		
+		
 		try {
 			sEchoStr = wxcpt.VerifyURL(sVerifyMsgSig, sVerifyTimeStamp,
 					sVerifyNonce, sVerifyEchoStr);
@@ -57,7 +65,7 @@ public class Sample {
 			e.printStackTrace();
 		}
 
-		/*
+		
 		------------使用示例二：对用户回复的消息解密---------------
 		用户回复消息或者点击事件响应时，企业会收到回调消息，此消息是经过公众平台加密之后的密文以post形式发送给企业，密文格式请参考官方文档
 		假设企业收到公众平台的回调消息如下：
@@ -72,7 +80,7 @@ public class Sample {
 		2.验证消息体签名的正确性。
 		3.将post请求的数据进行xml解析，并将<Encrypt>标签的内容进行解密，解密出来的明文即是用户回复消息的明文，明文格式请参考官方文档
 		第2，3步可以用公众平台提供的库函数DecryptMsg来实现。
-		*/
+		
 		// String sReqMsgSig = HttpUtils.ParseUrl("msg_signature");
 		String sReqMsgSig = "477715d11cdb4164915debcba66cb864d751f3e6";
 		// String sReqTimeStamp = HttpUtils.ParseUrl("timestamp");
@@ -103,7 +111,7 @@ public class Sample {
 			// TODO
 			// 解密失败，失败原因请查看异常
 			e.printStackTrace();
-		}
+		}*/
 
 	/*
 		------------使用示例三：企业回复用户消息的加密---------------
@@ -123,6 +131,14 @@ public class Sample {
 		2.将明文加密得到密文。	3.用密文，步骤1生成的timestamp,nonce和企业在公众平台设定的token生成消息体签名。			4.将密文，消息体签名，时间戳，随机数字串拼接成xml格式的字符串，发送给企业。
 		以上2，3，4步可以用公众平台提供的库函数EncryptMsg来实现。
 		*/
+		
+		//signature=3084ad896ce61bff425eb03885ae39e854cca0ec&timestamp=1245689&nonce=BBB&echostr=Hello
+		String sReqTimeStamp = "1245689";
+		// String sReqNonce = HttpUtils.ParseUrl("nonce");
+		String sReqNonce = "BBB";
+		System.out.println("signature="+SHA1.getSHA1(sToken, sReqTimeStamp, sReqNonce));
+		
+		
 		String sRespData = "<xml><ToUserName><![CDATA[mycreate]]></ToUserName><FromUserName><![CDATA[wx5823bf96d3bd56c7]]></FromUserName><CreateTime>1348831860</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[this is a test]]></Content><MsgId>1234567890123456</MsgId><AgentID>128</AgentID></xml>";
 		try{
 			String sEncryptMsg = wxcpt.EncryptMsg(sRespData, sReqTimeStamp, sReqNonce);

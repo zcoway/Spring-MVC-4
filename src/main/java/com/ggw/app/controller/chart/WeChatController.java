@@ -17,13 +17,17 @@ import com.ggw.app.serice.chart.WeChatService;
 
 @Controller
 public class WeChatController {
+	
 	@Autowired
 	private WeChatService weChatService;
 	
 
-	@RequestMapping(value = "/wxhandle",method=RequestMethod.GET,produces="text/plain")
+	@RequestMapping(value = "/weChat",method=RequestMethod.GET,produces="text/plain")
 	@ResponseBody
-	public String wxHandle(CheckModle siginModle) {
+	public String checkSigin(CheckModle siginModle) {
+		
+		System.out.println(siginModle);
+	
 		if(!weChatService.checkSignature(siginModle)){
 			return "error";
 		}
@@ -31,8 +35,8 @@ public class WeChatController {
 	}
 	
 	
-	@RequestMapping(value = "/wxhandle",method=RequestMethod.POST)
-	public void wxHandle(CheckModle siginModle,HttpServletRequest request,HttpServletResponse response) throws IOException{
+	@RequestMapping(value = "/weChat",method=RequestMethod.POST)
+	public void responeWeChatRequest(CheckModle siginModle,HttpServletRequest request,HttpServletResponse response) throws IOException{
 		if(!weChatService.checkSignature(siginModle)){
 			return;
 		}

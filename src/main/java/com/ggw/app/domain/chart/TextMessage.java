@@ -15,4 +15,13 @@ public class TextMessage extends BaseMessage {
 	public void setContent(String content) {
 		Content = content;
 	}
+
+	@Override
+	public String toString() {
+		return "Content=" + Content + ", ToUserName="
+				+ getToUserName() + ", FromUserName=" + getFromUserName()
+				+ ",CreateTime=" + getCreateTime() + ", MsgType="
+				+ getMsgType() + ", FuncFlag=" + getFuncFlag()
+				;
+	}
 }

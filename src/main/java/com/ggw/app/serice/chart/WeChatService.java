@@ -1,9 +1,11 @@
 package com.ggw.app.serice.chart;
 
+import java.awt.TrayIcon.MessageType;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 import javax.annotation.PostConstruct;
 import javax.servlet.http.HttpServletRequest;
@@ -15,6 +17,7 @@ import org.springframework.stereotype.Service;
 
 import com.ggw.app.domain.chart.Article;
 import com.ggw.app.domain.chart.CheckModle;
+import com.ggw.app.domain.chart.MessageContent;
 import com.ggw.app.domain.chart.NewsMessage;
 import com.ggw.app.domain.chart.TextMessage;
 import com.ggw.app.exception.chat.AesException;
@@ -29,6 +32,8 @@ public class WeChatService {
 	private Environment env;
 	
 	private WXBizMsgCrypt bizMsgCrypt;
+	
+	private MessageContent msgCenter = new MessageContent();
 	
 	@PostConstruct
 	protected void initialize(){
@@ -78,7 +83,28 @@ public class WeChatService {
 			String toUserName = requestMap.get("ToUserName");
 			// 消息类型
 			String msgType = requestMap.get("MsgType");
+			String content = requestMap.get("Content");
+			// *********************额外的代码，为了防止其他用户看到测试效果，现在信息做特殊验证***************start
+			if (msgType.equals(MessageUtil.RESP_MESSAGE_TYPE_TEXT)) {
 
+				if ("20141101".equals(content)) {
+					if (!msgCenter.containKey(fromUserName)) {
+						msgCenter.addUser(fromUserName, new Date().getTime());
+
+						TextMessage msg1 = new TextMessage();
+						msg1.setToUserName(toUserName);
+						msg1.setFromUserName(fromUserName);
+						msgCenter.addMsg(msg1);
+					}
+				}
+			}
+			// 如果未发送“暗号”，则直接回绝
+			if (!msgCenter.containKey(fromUserName)) {
+				return "";
+			}
+
+			
+			
 			// 默认回复此文本消息
 			TextMessage textMessage = new TextMessage();
 			textMessage.setToUserName(fromUserName);
@@ -112,7 +138,6 @@ public class WeChatService {
 			// 文本消息
 			if (msgType.equals(MessageUtil.REQ_MESSAGE_TYPE_TEXT)) {
 				// 接收用户发送的文本消息内容
-				String content = requestMap.get("Content");
 
 				// 创建图文消息
 				NewsMessage newsMessage = new NewsMessage();
@@ -259,6 +284,11 @@ public class WeChatService {
 	 */
 	public static String emoji(int hexEmoji) {
 		return String.valueOf(Character.toChars(hexEmoji));
+	}
+
+	public String getMessageContent() {
+		
+		return msgCenter.toString();
 	}
 
 }
