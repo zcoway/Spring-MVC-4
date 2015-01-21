@@ -1,50 +1,33 @@
-package com.ggw.app.domain.chart;
+package com.ggw.app.domain.chart.msg;
 
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-public class MessageContent extends HashMap<String, BaseMessage>{
+public class MessageContent {
 	
 	
-	private List<String> uses = new ArrayList<String>();
+	private Map<String,Long> uses = new HashMap<String,Long>();
 	private List<BaseMessage> messageList = new ArrayList<BaseMessage>();
 	
 	public void addUser(String useName,long l){
-		uses.add(useName+":"+l);
+		uses.put(useName,l);
 	}
 	
 	public void addMsg(BaseMessage message){
 		messageList.add(message);
 	}
 	public boolean containKey(String usename){
-		return uses.contains(usename);
+		return uses.containsKey(usename);
 	}
 	@Override
 	public String toString() {
 		if(uses.isEmpty()){
 			return "MessageContent {[]}";
 		}
-			
-		StringBuilder sb = new StringBuilder();
-		sb.append("MessageContent {[");
-		int size = uses.size();
-		int index = 0;
-		for(int i = 0; i < size; i++){
-			if(i > 0){
-				sb.append(",[");
-			}
-			sb.append("use="+uses.get(i)+",");
-			for(int j = 0; j <= i; j++){
-				sb.append("message : "+messageList.get(j));
-			}
-			if(i < size-1)
-			sb.append("]");
-		}
-		sb.append("]}");
-		
-		return sb.toString();
+		return uses.toString() + " : "+ messageList.toString();
 	}
 	
 	public static void main(String[] args) {

@@ -1,4 +1,4 @@
-package com.ggw.app.domain;
+package com.ggw.app.domain.user;
 
 import org.hibernate.validator.constraints.*;
 

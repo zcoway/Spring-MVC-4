@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<configuration scan="true" scanPeriod="3 seconds">
+<!-- <configuration scan="true" scanPeriod="3 seconds">
 	<contextName>spring4</contextName>
-
 	<appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
 		<encoder>
 			<pattern>
@@ -16,4 +15,50 @@
 	</root>
 
 	<logger name="com.ggw.app" level="ALL" />
+</configuration> -->
+	       
+	    <!--   控制台输出   -->
+	      <configuration scan="true" scanPeriod="3 seconds" >
+	<contextName>spring4</contextName>
+	   <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">   
+       <Encoding>UTF-8</Encoding>  
+       <encoder>
+			<pattern>
+				%d{HH:mm:ss} [%thread] %-5level %logger{32} - %msg%n
+			</pattern>
+		</encoder> 
+        <!-- <layout class="ch.qos.logback.classic.PatternLayout">   
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{32} - %msg%n
+            </pattern>   
+        </layout>    -->
+    </appender>   
+       
+   <!--  按照每天生成日志文件 -->   
+    <appender name="FILE"  
+        class="ch.qos.logback.core.rolling.RollingFileAppender">   
+        <Encoding>UTF-8</Encoding>   
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">   
+            <FileNamePattern>${catalina.home}/logs/myApp.log.%d{yyyy-MM-dd}.log</FileNamePattern>   
+            <MaxHistory>30</MaxHistory>   
+        </rollingPolicy>   
+        <encoder>
+			<pattern>
+				%d{HH:mm:ss.SSS} [%thread] %-5level %logger{32} - %msg%n
+			</pattern>
+		</encoder> 
+        <!-- <layout class="ch.qos.logback.classic.PatternLayout">   
+            <pattern>%d{HH:mm:ss} [%thread] %-5level %logger{50} - %msg%n   
+            </pattern>   
+       </layout>    -->
+    </appender>   
+  
+    <root level="info">   
+        <appender-ref ref="STDOUT" />   
+        <appender-ref ref="FILE" />   
+    </root>  
+
+	<logger name="com.ggw.app" level="info" /> 
 </configuration>
+
+       
+ 

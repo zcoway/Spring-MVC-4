@@ -12,7 +12,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.*;
 
 import com.ggw.app.dao.AccountRepository;
-import com.ggw.app.domain.Account;
+import com.ggw.app.domain.user.Account;
 
 public class UserService implements UserDetailsService {
 	

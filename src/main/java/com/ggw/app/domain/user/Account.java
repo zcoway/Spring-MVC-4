@@ -1,8 +1,9 @@
-package com.ggw.app.domain;
+package com.ggw.app.domain.user;
 
 import javax.persistence.*;
 
 import org.codehaus.jackson.annotate.JsonIgnore;
+import org.codehaus.jackson.map.annotate.JsonView;
 
 @SuppressWarnings("serial")
 @Entity
@@ -11,7 +12,8 @@ import org.codehaus.jackson.annotate.JsonIgnore;
 public class Account implements java.io.Serializable {
 
 	public static final String FIND_BY_EMAIL = "Account.findByEmail";
-
+	
+	
 	@Id
 	@GeneratedValue
 	private Long id;
@@ -45,7 +47,6 @@ public class Account implements java.io.Serializable {
 	public void setEmail(String email) {
 		this.email = email;
 	}
-
 	public String getPassword() {
 		return password;
 	}

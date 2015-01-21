@@ -1,8 +1,8 @@
-package com.ggw.app.domain.chart;
+package com.ggw.app.domain.chart.msg;
 
 /**
  * 文本消息
- * 
+ * @author ggw
  */
 public class TextMessage extends BaseMessage {
 	// 回复的消息内容

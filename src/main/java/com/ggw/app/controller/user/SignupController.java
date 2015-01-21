@@ -11,8 +11,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import com.ggw.app.account.*;
 import com.ggw.app.dao.AccountRepository;
-import com.ggw.app.domain.Account;
-import com.ggw.app.domain.SignupForm;
+import com.ggw.app.domain.user.Account;
+import com.ggw.app.domain.user.SignupForm;
 import com.ggw.app.service.UserService;
 import com.ggw.app.support.web.*;
 

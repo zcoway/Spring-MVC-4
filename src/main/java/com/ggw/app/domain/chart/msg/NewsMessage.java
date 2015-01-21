@@ -1,12 +1,10 @@
-package com.ggw.app.domain.chart;
+package com.ggw.app.domain.chart.msg;
 
 import java.util.List;
 
 /**
  * 文本消息
- * 
- * @author liufeng
- * @date 2013-05-19
+ * @author ggw
  */
 public class NewsMessage extends BaseMessage {
 	// 图文消息个数，限制为10条以内

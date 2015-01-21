@@ -1,8 +1,8 @@
-package com.ggw.app.domain.chart;
+package com.ggw.app.domain.chart.msg;
 
 /**
  * 图文model
- * 
+ * @author ggw
  */
 public class Article {
 	// 图文消息名称

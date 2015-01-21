@@ -17,7 +17,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 
 import com.ggw.app.dao.AccountRepository;
-import com.ggw.app.domain.Account;
+import com.ggw.app.domain.user.Account;
 
 @RunWith(MockitoJUnitRunner.class)
 public class UserServiceTest {

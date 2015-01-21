@@ -1,8 +1,8 @@
-package com.ggw.app.domain.chart;
+package com.ggw.app.domain.chart.msg;
 
 /**
  * 音乐model
- * 
+ * @author ggw
  */
 public class Music {
 	// 音乐名称

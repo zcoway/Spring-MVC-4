@@ -1,4 +1,4 @@
-﻿package com.ggw.app.util;
+﻿package com.ggw.app.util.chat;
 
 import java.io.StringReader;
 
@@ -9,9 +9,6 @@ import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
-
-import com.ggw.app.util.chat.SHA1;
-import com.ggw.app.util.chat.WXBizMsgCrypt;
 
 import javax.xml.parsers.DocumentBuilderFactory;
 
@@ -141,7 +138,7 @@ public class Sample {
 		
 		String sRespData = "<xml><ToUserName><![CDATA[mycreate]]></ToUserName><FromUserName><![CDATA[wx5823bf96d3bd56c7]]></FromUserName><CreateTime>1348831860</CreateTime><MsgType><![CDATA[text]]></MsgType><Content><![CDATA[this is a test]]></Content><MsgId>1234567890123456</MsgId><AgentID>128</AgentID></xml>";
 		try{
-			String sEncryptMsg = wxcpt.EncryptMsg(sRespData, sReqTimeStamp, sReqNonce);
+			String sEncryptMsg = wxcpt.encryptMsg(sRespData, sReqTimeStamp, sReqNonce);
 			System.out.println("after encrypt sEncrytMsg: " + sEncryptMsg);
 			// 加密成功
 			// TODO:

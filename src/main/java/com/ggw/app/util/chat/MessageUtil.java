@@ -1,6 +1,8 @@
-package com.ggw.app.util;
+package com.ggw.app.util.chat;
 
+import java.io.IOException;
 import java.io.InputStream;
+import java.io.StringReader;
 import java.io.Writer;
 import java.util.HashMap;
 import java.util.List;
@@ -9,13 +11,15 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 
 import org.dom4j.Document;
+import org.dom4j.DocumentException;
 import org.dom4j.Element;
 import org.dom4j.io.SAXReader;
 
-import com.ggw.app.domain.chart.Article;
-import com.ggw.app.domain.chart.MusicMessage;
-import com.ggw.app.domain.chart.NewsMessage;
-import com.ggw.app.domain.chart.TextMessage;
+import com.ggw.app.domain.chart.msg.Article;
+import com.ggw.app.domain.chart.msg.MusicMessage;
+import com.ggw.app.domain.chart.msg.NewsMessage;
+import com.ggw.app.domain.chart.msg.TextMessage;
+import com.ggw.app.exception.chat.XmlParseException;
 import com.thoughtworks.xstream.XStream;
 import com.thoughtworks.xstream.core.util.QuickWriter;
 import com.thoughtworks.xstream.io.HierarchicalStreamWriter;
@@ -92,19 +96,60 @@ public class MessageUtil {
 	 * 解析微信发来的请求（XML）
 	 * 
 	 * @param request
-	 * @return
-	 * @throws Exception
+	 * @return 返回以K，V格式的Map数据
+	 * @throws XmlParseException 如果解析失败則拋出此異常
 	 */
 	@SuppressWarnings("unchecked")
-	public static Map<String, String> parseXml(HttpServletRequest request) throws Exception {
+	public static Map<String, String> parseXml(HttpServletRequest request){
 		// 将解析结果存储在HashMap中
 		Map<String, String> map = new HashMap<String, String>();
-
 		// 从request中取得输入流
-		InputStream inputStream = request.getInputStream();
+		InputStream inputStream = null;
+		
+		try {
+			inputStream = request.getInputStream();
+			// 读取输入流
+			SAXReader reader = new SAXReader();
+			Document document = reader.read(inputStream);
+			// 得到xml根元素
+			Element root = document.getRootElement();
+			// 得到根元素的所有子节点
+			List<Element> elementList = root.elements();
+
+			// 遍历所有子节点
+			for (Element e : elementList)
+				map.put(e.getName(), e.getText());
+		}catch (Exception e) {
+			throw new XmlParseException(e.getMessage(), e.getCause());
+		}finally{
+			// 释放资源
+			try {
+				inputStream.close();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+			inputStream = null;
+		}
+		return map;
+	}
+	/**
+	 * 解析给定的xml格式的字符串为k,v,并以Map的形式返回。
+	 * @param text
+	 * @return 返回以K，v格式的Map数据，
+	 * @throws XmlParseException 如果解析失败則拋出此異常
+	 */
+	public static Map<String, String> parseXml(String text) {
+		// 将解析结果存储在HashMap中
+		Map<String, String> map = new HashMap<String, String>();
+		
+		StringReader stringReader = new StringReader(text);
+		
 		// 读取输入流
 		SAXReader reader = new SAXReader();
-		Document document = reader.read(inputStream);
+		Document document = null;
+		try {
+			document = reader.read(stringReader);
+		
 		// 得到xml根元素
 		Element root = document.getRootElement();
 		// 得到根元素的所有子节点
@@ -113,18 +158,21 @@ public class MessageUtil {
 		// 遍历所有子节点
 		for (Element e : elementList)
 			map.put(e.getName(), e.getText());
-
-		// 释放资源
-		inputStream.close();
-		inputStream = null;
-
+		} catch (DocumentException e1) {
+			throw new XmlParseException(e1.getMessage(),e1.getCause());
+		}finally{
+			// 释放资源
+			stringReader.close();
+			stringReader = null;
+		}
 		return map;
 	}
 
 	/**
 	 * 文本消息对象转换成xml
 	 * 
-	 * @param textMessage 文本消息对象
+	 * @param textMessage
+	 *            文本消息对象
 	 * @return xml
 	 */
 	public static String textMessageToXml(TextMessage textMessage) {
@@ -135,7 +183,8 @@ public class MessageUtil {
 	/**
 	 * 音乐消息对象转换成xml
 	 * 
-	 * @param musicMessage 音乐消息对象
+	 * @param musicMessage
+	 *            音乐消息对象
 	 * @return xml
 	 */
 	public static String musicMessageToXml(MusicMessage musicMessage) {
@@ -146,7 +195,8 @@ public class MessageUtil {
 	/**
 	 * 图文消息对象转换成xml
 	 * 
-	 * @param newsMessage 图文消息对象
+	 * @param newsMessage
+	 *            图文消息对象
 	 * @return xml
 	 */
 	public static String newsMessageToXml(NewsMessage newsMessage) {

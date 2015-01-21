@@ -2,6 +2,7 @@ package com.ggw.app.controller.user;
 
 import java.security.Principal;
 
+import org.codehaus.jackson.map.annotate.JsonView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.access.annotation.Secured;
@@ -13,7 +14,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import com.ggw.app.dao.AccountRepository;
-import com.ggw.app.domain.Account;
+import com.ggw.app.domain.user.Account;
 
 @Controller
 @Secured("ROLE_USER")
@@ -25,7 +26,6 @@ class AccountController {
     public AccountController(AccountRepository accountRepository) {
         this.accountRepository = accountRepository;
     }
-
     @RequestMapping(value = "account/current", method = RequestMethod.GET)
     @ResponseStatus(value = HttpStatus.OK)
     @ResponseBody

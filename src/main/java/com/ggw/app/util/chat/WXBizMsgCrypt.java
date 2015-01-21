@@ -13,6 +13,7 @@
  */
 package com.ggw.app.util.chat;
 
+import java.io.UnsupportedEncodingException;
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Random;
@@ -22,9 +23,11 @@ import javax.crypto.spec.IvParameterSpec;
 import javax.crypto.spec.SecretKeySpec;
 
 import org.apache.commons.codec.binary.Base64;
-import org.springframework.stereotype.Component;
+import org.apache.commons.codec.net.URLCodec;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
-import com.ggw.app.domain.chart.CheckModle;
+import com.ggw.app.domain.chart.msg.CheckModle;
 import com.ggw.app.exception.chat.AesException;
 
 /**
@@ -44,11 +47,13 @@ import com.ggw.app.exception.chat.AesException;
  * </ol>
  */
 public class WXBizMsgCrypt {
-	static Charset CHARSET = Charset.forName("utf-8");
-	Base64 base64 = new Base64();
-	byte[] aesKey;
-	String token;
-	String corpId;
+	private static Log logger = LogFactory.getLog(WXBizMsgCrypt.class);
+	
+	private static final Charset CHARSET = Charset.forName("utf-8");
+	private Base64 base64 = new Base64();
+	private byte[] aesKey;
+	private String token;
+	private String corpId;
 
 	/**
 	 * 构造函数
@@ -75,7 +80,7 @@ public class WXBizMsgCrypt {
 	}
 
 	// 生成4个字节的网络字节序
-	byte[] getNetworkBytesOrder(int sourceNumber) {
+	public byte[] getNetworkBytesOrder(int sourceNumber) {
 		byte[] orderBytes = new byte[4];
 		orderBytes[3] = (byte) (sourceNumber & 0xFF);
 		orderBytes[2] = (byte) (sourceNumber >> 8 & 0xFF);
@@ -85,7 +90,7 @@ public class WXBizMsgCrypt {
 	}
 
 	// 还原4个字节的网络字节序
-	int recoverNetworkBytesOrder(byte[] orderBytes) {
+	public int recoverNetworkBytesOrder(byte[] orderBytes) {
 		int sourceNumber = 0;
 		for (int i = 0; i < 4; i++) {
 			sourceNumber <<= 8;
@@ -95,7 +100,7 @@ public class WXBizMsgCrypt {
 	}
 
 	// 随机生成16位字符串
-	String getRandomStr() {
+	public String getRandomStr() {
 		String base = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
 		Random random = new Random();
 		StringBuffer sb = new StringBuffer();
@@ -115,7 +120,7 @@ public class WXBizMsgCrypt {
 	 * @throws AesException
 	 *             aes加密失败
 	 */
-	String encrypt(String randomStr, String text) throws AesException {
+	public String encrypt(String randomStr, String text) throws AesException {
 		ByteGroup byteCollector = new ByteGroup();
 		byte[] randomStrBytes = randomStr.getBytes(CHARSET);
 		byte[] textBytes = text.getBytes(CHARSET);
@@ -185,7 +190,7 @@ public class WXBizMsgCrypt {
 
 			// 使用BASE64对密文进行解码
 			byte[] encrypted = Base64.decodeBase64(text);
-
+			System.out.println(encrypted.length);
 			// 解密
 			original = cipher.doFinal(encrypted);
 		} catch (Exception e) {
@@ -212,6 +217,12 @@ public class WXBizMsgCrypt {
 			throw new AesException(AesException.IllegalBuffer);
 		}
 
+		logger.warn("after decrypt = "+xmlContent);
+		logger.warn("from_corpid="+from_corpid);
+		
+		logger.warn("after decrypt = "+xmlContent);
+		logger.warn("from_corpid="+from_corpid);
+		
 		// corpid不相同的情况
 		if (!from_corpid.equals(corpId)) {
 			throw new AesException(AesException.ValidateCorpidError);
@@ -240,7 +251,7 @@ public class WXBizMsgCrypt {
 	 * @throws AesException
 	 *             执行失败，请查看该异常的错误码和具体的错误信息
 	 */
-	public String EncryptMsg(String replyMsg, String timeStamp, String nonce)
+	public String encryptMsg(String replyMsg, String timeStamp, String nonce)
 			throws AesException {
 		// 加密
 		String encrypt = encrypt(getRandomStr(), replyMsg);
@@ -279,7 +290,7 @@ public class WXBizMsgCrypt {
 	 * @throws AesException
 	 *             执行失败，请查看该异常的错误码和具体的错误信息
 	 */
-	public String DecryptMsg(String msgSignature, String timeStamp,
+	public String decryptMsg(String msgSignature, String timeStamp,
 			String nonce, String postData) throws AesException {
 
 		// 密钥，公众账号的app secret
@@ -317,7 +328,7 @@ public class WXBizMsgCrypt {
 	 * @throws AesException
 	 *             执行失败，请查看该异常的错误码和具体的错误信息
 	 */
-	public String VerifyURL(String msgSignature, String timeStamp,
+	public String verifyURL(String msgSignature, String timeStamp,
 			String nonce, String echoStr) throws AesException {
 		String signature = SHA1.getSHA1(token, timeStamp, nonce);
 		if (!signature.equals(msgSignature)) {
@@ -327,13 +338,26 @@ public class WXBizMsgCrypt {
 		String result = decrypt(echoStr);
 		return result;
 	}
-	public static void main(String[] args) {
+	public static void main(String[] args) throws UnsupportedEncodingException, Exception {
 		////signature=3084ad896ce61bff425eb03885ae39e854cca0ec&timestamp=1245689&nonce=BBB&echostr=Hello
+		
+		//System.out.println(URLDecoder.decode("eMW5d0xeM95f7PbPwF32OReCnZRE+hnDXix05m1h8H7r4FGEgzCZSCJwsj2onfnO9BHimJ3LamPziRdmU61n6SKK6Vvq3pF0B+KZ3uctg0JZIrBgIZ1AtKnMp8BchXfujwM/z8MvBFl9Hy9hqvz67QwRikJOqNZH/k42L4ylCIPw9CIlNrx0RswosUxWhUwSzyd3yUwYvBImA6UJNMoYl1pp87jbMAPuzBK/V9vFo9owBx2R4Vfn9w6I1VIQCfo9Glx4XX08lQZbxqgGM8zO18Pz4zlXLEAtbblqwVOe5kqBqeU7RLz3GgY28aye8q3Y4Zi9Nd8nlNdMehBA/xIRNONJcS5VZSLq+ROvP66+RMS1LA7OsCY6Y0RDZwDbb4+yz0a0RpMtB2ZetsrFEcebo7Crnw3LUcy0xz39UHrDWDE=", "utf-8"));
+		String s = "eMW5d0xeM95f7PbPwF32OReCnZRE hnDXix05m1h8H7r4FGEgzCZSCJwsj2onfnO9BHimJ3LamPziRdmU61n6SKK6Vvq3pF0B KZ3uctg0JZIrBgIZ1AtKnMp8BchXfujwM/z8MvBFl9Hy9hqvz67QwRikJOqNZH/k42L4ylCIPw9CIlNrx0RswosUxWhUwSzyd3yUwYvBImA6UJNMoYl1pp87jbMAPuzBK/V9vFo9owBx2R4Vfn9w6I1VIQCfo9Glx4XX08lQZbxqgGM8zO18Pz4zlXLEAtbblqwVOe5kqBqeU7RLz3GgY28aye8q3Y4Zi9Nd8nlNdMehBA/xIRNONJcS5VZSLq ROvP66 RMS1LA7OsCY6Y0RDZwDbb4 yz0a0RpMtB2ZetsrFEcebo7Crnw3LUcy0xz39UHrDWDE=";
+//		s=s.replaceAll(" ", "+");
+		System.out.println(new URLCodec().encode(s));
+		
+		//--------------------------
 		CheckModle checkModle = new CheckModle();
-		checkModle.setSignature("3084ad896ce61bff425eb03885ae39e854cca0ec");
-		checkModle.setTimestamp("1245689");
-		checkModle.setNonce("BBB");
-		WXBizMsgCrypt wx = new WXBizMsgCrypt("wx2014", "4xyk9sC3j5E5FxYEjcJ9JcYdytLUYpKPNATD2fUIqKm", "sd");
+		checkModle.setSignature("c11de9a91ed1d6909656bb7a965c8dffb4d730a2");
+		checkModle.setTimestamp("1415347010");
+		checkModle.setNonce("1161471684");
+		
+		WXBizMsgCrypt wx = new WXBizMsgCrypt("wx2014", "4xyk9sC3j5E5FxYEjcJ9JcYdytLUYpKPNATD2fUIqKm", "wx8f3f48ff9aba1c22");
 		System.out.println(wx.checkSignature(checkModle));
+		String msg = wx.decrypt("");//"eMW5d0xeM95f7PbPwF32OReCnZRE+hnDXix05m1h8H7r4FGEgzCZSCJwsj2onfnO9BHimJ3LamPziRdmU61n6SKK6Vvq3pF0B+KZ3uctg0JZIrBgIZ1AtKnMp8BchXfujwM/z8MvBFl9Hy9hqvz67QwRikJOqNZH/k42L4ylCIPw9CIlNrx0RswosUxWhUwSzyd3yUwYvBImA6UJNMoYl1pp87jbMAPuzBK/V9vFo9owBx2R4Vfn9w6I1VIQCfo9Glx4XX08lQZbxqgGM8zO18Pz4zlXLEAtbblqwVOe5kqBqeU7RLz3GgY28aye8q3Y4Zi9Nd8nlNdMehBA/xIRNONJcS5VZSLq+ROvP66+RMS1LA7OsCY6Y0RDZwDbb4+yz0a0RpMtB2ZetsrFEcebo7Crnw3LUcy0xz39UHrDWDE=");
+		System.out.println(msg);
+		
 	}
+	
+
 }

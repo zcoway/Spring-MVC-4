@@ -28,6 +28,7 @@ import org.springframework.web.servlet.config.annotation.DefaultServletHandlerCo
 import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurationSupport;
 import org.springframework.web.servlet.mvc.method.annotation.RequestMappingHandlerMapping;
+import org.springframework.web.servlet.resource.VersionResourceResolver;
 import org.thymeleaf.extras.springsecurity3.dialect.SpringSecurityDialect;
 import org.thymeleaf.spring4.SpringTemplateEngine;
 import org.thymeleaf.spring4.view.ThymeleafViewResolver;
@@ -54,20 +55,19 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
         return requestMappingHandlerMapping;
     }
     
-   /* @Bean
-    public CastorMarshaller castorMarshaller(){
-    	CastorMarshaller castorMarshaller = new CastorMarshaller();
-    	castorMarshaller.setRootElement("xml");
-    	castorMarshaller.setIgnoreExtraAttributes(false);
-    	return castorMarshaller;
-    }*/
+//    @Bean
+//    public CastorMarshaller castorMarshaller(){
+//    	CastorMarshaller castorMarshaller = new CastorMarshaller();
+//    	castorMarshaller.setRootElement("xml");
+//    	return castorMarshaller;
+//    }
     
     @Override
     protected void configureMessageConverters(List<HttpMessageConverter<?>> converters) {
     	StringHttpMessageConverter stringConverter = new StringHttpMessageConverter();
 		stringConverter.setWriteAcceptCharset(false);
-	//	MarshallingHttpMessageConverter marshallingHttpMessageConverter = new MarshallingHttpMessageConverter(castorMarshaller());
-	//	converters.add(marshallingHttpMessageConverter);
+//		MarshallingHttpMessageConverter marshallingHttpMessageConverter = new MarshallingHttpMessageConverter(castorMarshaller());
+//		converters.add(marshallingHttpMessageConverter);
 		converters.add(new ByteArrayHttpMessageConverter());
 		converters.add(stringConverter);
 		converters.add(new ResourceHttpMessageConverter());
@@ -119,7 +119,9 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
 
     @Override
     public void addResourceHandlers(ResourceHandlerRegistry registry) {
-        registry.addResourceHandler(RESOURCES_HANDLER).addResourceLocations(RESOURCES_LOCATION);
+        registry.addResourceHandler(RESOURCES_HANDLER).addResourceLocations(RESOURCES_LOCATION).resourceChain(true).addResolver(
+				new VersionResourceResolver()
+				.addContentVersionStrategy("/"));
     }
 
     @Override
@@ -127,14 +129,15 @@ class WebMvcConfig extends WebMvcConfigurationSupport {
         configurer.enable();
     }
 
+    
     /**
      * Handles favicon.ico requests assuring no <code>404 Not Found</code> error is returned.
      */
-    @Controller
-    static class FaviconController {
-        @RequestMapping("favicon.ico")
-        String favicon() {
-            return "forward:/resources/images/favicon.ico";
-        }
-    }
+//    @Controller
+//    static class FaviconController {
+//        @RequestMapping("favicon.ico")
+//        String favicon() {
+//            return "forward:/resources/images/favicon.ico";
+//        }
+//    }
 }

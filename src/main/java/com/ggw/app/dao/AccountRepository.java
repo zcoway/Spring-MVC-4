@@ -7,7 +7,7 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.security.crypto.password.PasswordEncoder;
 
-import com.ggw.app.domain.Account;
+import com.ggw.app.domain.user.Account;
 
 @Repository
 @Transactional(readOnly = true)

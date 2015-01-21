@@ -1,10 +1,12 @@
-package com.ggw.app.domain.chart;
+package com.ggw.app.domain.chart.msg;
 
 /**
  * 消息基类（公众帐号 -> 普通用户）
- * 
+ * @author ggw
  */
 public class BaseMessage {
+	// 消息id，64位整型 
+	private long MsgId;
 	// 接收方帐号（收到的OpenID）
 	private String ToUserName;
 	// 开发者微信号
@@ -15,7 +17,7 @@ public class BaseMessage {
 	private String MsgType;
 	// 位0x0001被标志时，星标刚收到的消息
 	private int FuncFlag;
-
+	
 	public String getToUserName() {
 		return ToUserName;
 	}
@@ -54,5 +56,13 @@ public class BaseMessage {
 
 	public void setFuncFlag(int funcFlag) {
 		FuncFlag = funcFlag;
+	}
+
+	public long getMsgId() {
+		return MsgId;
+	}
+
+	public void setMsgId(long msgId) {
+		MsgId = msgId;
 	}
 }

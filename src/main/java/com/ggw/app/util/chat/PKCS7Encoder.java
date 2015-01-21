@@ -15,8 +15,8 @@ import java.util.Arrays;
  * 提供基于PKCS7算法的加解密接口.
  */
 public class PKCS7Encoder {
-	static Charset CHARSET = Charset.forName("utf-8");
-	static int BLOCK_SIZE = 32;
+	private static Charset CHARSET = Charset.forName("utf-8");
+	private static int BLOCK_SIZE = 32;
 
 	/**
 	 * 获得对明文进行补位填充的字节.

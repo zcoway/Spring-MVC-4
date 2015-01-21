@@ -6,7 +6,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
-import com.ggw.app.serice.chart.WeChatService;
+import com.ggw.app.service.chart.WeChatService;
+
 
 @Controller
 public class HomeController {
