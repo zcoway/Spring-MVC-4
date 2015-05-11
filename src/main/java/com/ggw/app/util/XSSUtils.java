@@ -1,6 +1,6 @@
 package com.ggw.app.util;
 /**
- * XSSUtils工具类提供了替换危险字符功能，避免XSS攻击。
+ * XSSUtils工具类
  * @author ggw
  */
 public class XSSUtils {
@@ -9,8 +9,8 @@ public class XSSUtils {
 			null, null, null, null, null, null, null, null, null, null, null,
 			null, null, "&#59;", "&lt;", null, "&gt;" };
 	/**
-	 * 替换数据中的危险字符。(要确保整个应用程序的安全，必须在每次返回用户提供的数据时都使用 encodeXSS() 方法)
-	 * 如："<Script>alert ("XSS")<Script>"  替换为: &lt;Script&gt;alert &#40;&quot; XSS &quot;&#41;&lt;Script&gt;
+	 * 编码文本内容，将文本内容中的   < , >, & , ' , " , ( , ) , + , ; , % 字符进行转义，从而避免xss攻击 
+	 * 如:<Script>alert (XSS)<Script> 转义为: &lt;Script&gt;alert &#40;&quot; XSS &quot;&#41;&lt;Script&gt;
 	 * @param text
 	 * @return
 	 */
@@ -40,8 +40,5 @@ public class XSSUtils {
 		if (!(foundXSSChar))
 			return text;
 		return buf.toString();
-	}
-	public static void main(String[] args) {
-		System.out.println(encodeXSS("<Script>alert (\"XSS\")<Script>"));
 	}
 }
